@@ -2,7 +2,7 @@ package org.code.challange.service.card;
 
 import java.util.List;
 
-import org.code.challange.card.DepthCard;
+import org.code.challange.card.RankingChart;
 import org.code.challange.exception.IlligalCardOperationException;
 import org.code.challange.model.AddPlayer;
 import org.code.challange.model.Backups;
@@ -55,9 +55,9 @@ public class CardOperationHandlerService implements CardController
         return getDepthCard(sport).getBackupPlayers(backupsCommand);
     }
 
-    private DepthCard getDepthCard(String sport)
+    private RankingChart getDepthCard(String sport)
     {
-        DepthCard depthCard = sportDepthCardFactory.getDepthCard(sport);
+        RankingChart depthCard = sportDepthCardFactory.getDepthCard(sport);
         if (depthCard == null)
         {
             throw new IlligalCardOperationException(UNSUPPORTED_OPERATION, String.format("Unsupported sport type %s", sport));

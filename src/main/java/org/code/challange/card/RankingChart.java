@@ -21,9 +21,9 @@ import static org.code.challange.exception.IlligalCardOperationException.MAXIMUM
 import static org.code.challange.exception.IlligalCardOperationException.PLAYER_DOES_NOT_EXIST;
 import static org.code.challange.exception.IlligalCardOperationException.UNSUPPORTED_OPERATION;
 
-public class DepthCard
+public class RankingChart
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DepthCard.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RankingChart.class);
 
     private final Map<Integer, Player> playerRegister = new LinkedHashMap();
 
@@ -32,7 +32,7 @@ public class DepthCard
     private final String sport;
     private final int maximumCardDepth;
 
-    public DepthCard(String sport, int maximumCardDepth)
+    public RankingChart(String sport, int maximumCardDepth)
     {
         this.sport = sport;
         this.maximumCardDepth = maximumCardDepth;

@@ -3,7 +3,7 @@ package org.code.challange.service;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.code.challange.card.DepthCard;
+import org.code.challange.card.RankingChart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ public class SportDepthCardFactory
 {
     private static final Logger LOGGER= LoggerFactory.getLogger(SportDepthCardFactory.class);
 
-    private Map<String, DepthCard> sportDepthCardHolder;
+    private Map<String, RankingChart> sportDepthCardHolder;
 
     @Autowired
     public SportDepthCardFactory(@Value("#{${card.sports}}") Map<String, Integer> sportsDepthConfigMap)
@@ -24,13 +24,13 @@ public class SportDepthCardFactory
 
         for (Map.Entry<String, Integer> config : sportsDepthConfigMap.entrySet())
         {
-            sportDepthCardHolder.put(config.getKey().toLowerCase(), new DepthCard(config.getKey(), config.getValue()));
+            sportDepthCardHolder.put(config.getKey().toLowerCase(), new RankingChart(config.getKey(), config.getValue()));
             LOGGER.info("Instantiating sport {}", config.getKey());
         }
 
     }
 
-    public DepthCard getDepthCard(String sport)
+    public RankingChart getDepthCard(String sport)
     {
         return sportDepthCardHolder.get(sport.toLowerCase());
     }
