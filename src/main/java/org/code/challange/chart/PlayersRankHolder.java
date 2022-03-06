@@ -1,15 +1,15 @@
-package org.code.challange.card;
+package org.code.challange.chart;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import org.code.challange.model.Player;
 
-public class PlayersRank
+public class PlayersRankHolder implements PlayersRanks
 {
     private LinkedList<Player> ranks;
 
-    public PlayersRank()
+    public PlayersRankHolder()
     {
         ranks = new LinkedList();
     }
@@ -24,12 +24,12 @@ public class PlayersRank
         return ranks.remove(player);
     }
 
-    public void addToTanks(int index, Player player)
+    public void addToRanks(int index, Player player)
     {
         ranks.add(index,player);
     }
 
-    public int playersInRanks()
+    public int countPlayersInRanks()
     {
         return ranks.size();
     }

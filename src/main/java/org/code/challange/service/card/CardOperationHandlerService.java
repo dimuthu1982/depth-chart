@@ -2,20 +2,17 @@ package org.code.challange.service.card;
 
 import java.util.List;
 
-import org.code.challange.card.RankingChart;
-import org.code.challange.exception.IlligalCardOperationException;
+import org.code.challange.chart.RankingChart;
+import org.code.challange.exception.UnsupportedChartOperationException;
 import org.code.challange.model.AddPlayer;
-import org.code.challange.model.Backups;
 import org.code.challange.model.CreatePlayer;
-import org.code.challange.model.RemovePlayer;
+import org.code.challange.model.PlayerPosition;
 import org.code.challange.service.SportDepthCardFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static org.code.challange.exception.IlligalCardOperationException.UNSUPPORTED_OPERATION;
-
 @Service
-public class CardOperationHandlerService implements CardController
+public class CardOperationHandlerService implements CardOperationHandler
 {
     private SportDepthCardFactory sportDepthCardFactory;
 
@@ -32,7 +29,7 @@ public class CardOperationHandlerService implements CardController
     }
 
     @Override
-    public void addPlayerToCard(String sport, List<AddPlayer> addPlayer)
+    public void addPlayerToChart(String sport, List<AddPlayer> addPlayer)
     {
         getDepthCard(sport).addPlayerToCard(addPlayer);
     }
@@ -44,15 +41,15 @@ public class CardOperationHandlerService implements CardController
     }
 
     @Override
-    public String removePlayerFromCard(String sport, RemovePlayer removePlayer)
+    public String removePlayerFromChart(String sport, PlayerPosition playerPosition)
     {
-        return getDepthCard(sport).removePlayerFromCard(removePlayer);
+        return getDepthCard(sport).removePlayerFromCard(playerPosition);
     }
 
     @Override
-    public List<String> getBackupPlayers(String sport, Backups backupsCommand)
+    public List<String> getBackupPlayers(String sport, PlayerPosition playerPosition)
     {
-        return getDepthCard(sport).getBackupPlayers(backupsCommand);
+        return getDepthCard(sport).getBackupPlayers(playerPosition);
     }
 
     private RankingChart getDepthCard(String sport)
@@ -60,7 +57,7 @@ public class CardOperationHandlerService implements CardController
         RankingChart depthCard = sportDepthCardFactory.getDepthCard(sport);
         if (depthCard == null)
         {
-            throw new IlligalCardOperationException(UNSUPPORTED_OPERATION, String.format("Unsupported sport type %s", sport));
+            throw new UnsupportedChartOperationException(String.format("Unsupported sport type %s", sport));
         }
         return depthCard;
     }

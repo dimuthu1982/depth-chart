@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.code.challange.model.AddPlayer;
 import org.code.challange.model.CreatePlayer;
-import org.code.challange.model.RemovePlayer;
+import org.code.challange.model.PlayerPosition;
 import org.code.challange.model.Result;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.jupiter.api.MethodOrderer;
@@ -63,7 +63,7 @@ class DepthCardControllerTest
     @Order(1)
     void shouldReturnCreatedStatusWhenNFLPlayerSaved()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/NFL/player";
+        final String baseUrl = getBaseUrl() + "/NFL/player";
 
         CreatePlayer createPlayer = getPlayers("NFL", 1, 1).get(0);
         HttpEntity<CreatePlayer> request = new HttpEntity(createPlayer, new HttpHeaders());
@@ -77,7 +77,7 @@ class DepthCardControllerTest
     @Order(2)
     void shouldReturnCreatedStatusWhenNFLPlayersSaved()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/NFL/players";
+        final String baseUrl = getBaseUrl() + "/NFL/players";
 
         List<CreatePlayer> playerList = getPlayers("NFL", 2, 4);
         HttpEntity<CreatePlayer> request = new HttpEntity(playerList, new HttpHeaders());
@@ -90,7 +90,7 @@ class DepthCardControllerTest
     @Order(3)
     void shouldReturnCreatedStatusWhenPlayerAddedToNRLCard()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/NFL/players/addToChart";
+        final String baseUrl = getBaseUrl() + "/NFL/players/addToChart";
         AddPlayer addPlayer1 = getAddPlayer(2, "QB", 1);
         AddPlayer addPlayer2 = getAddPlayer(1, "QB", 2);
 
@@ -116,7 +116,7 @@ class DepthCardControllerTest
     @Order(4)
     void shouldReturnBackupsForRBPositionPlayer3()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/NFL/player/3/position/RB/backups";
+        final String baseUrl = getBaseUrl() + "/NFL/player/3/position/RB/backups";
 
         ResponseEntity<Result> result = restTemplate.getForEntity(baseUrl, Result.class);
 
@@ -131,7 +131,7 @@ class DepthCardControllerTest
     @Order(1)
     void shouldReturnCreatedStatusWhenBBPlayersSaved()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/players";
+        final String baseUrl = getBaseUrl() + "/BB/players";
 
         List<CreatePlayer> players = getPlayers("BB", 1, 4);
 
@@ -143,7 +143,7 @@ class DepthCardControllerTest
     @Order(2)
     void shouldFailWhenAddingUndefinedPlayerToBBCard()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToChart";
+        final String baseUrl = getBaseUrl() + "/BB/player/addToChart";
 
         AddPlayer addPlayer = getAddPlayer(100, "CTR", 3);
 
@@ -158,7 +158,7 @@ class DepthCardControllerTest
     @Order(3)
     void shouldFailWhenAddingPlayerToBBCardOutOfOrder()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToChart";
+        final String baseUrl = getBaseUrl() + "/BB/player/addToChart";
 
         AddPlayer addPlayer = getAddPlayer(3, "CTR", 3);
 
@@ -173,7 +173,7 @@ class DepthCardControllerTest
     @Order(4)
     void shouldAddPlayersToCardWhenAddingPlayerToBBSequenceDepth()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/players/addToChart";
+        final String baseUrl = getBaseUrl() + "/BB/players/addToChart";
 
         AddPlayer addPlayer1 = getAddPlayer(1, "FWD", 1);
         AddPlayer addPlayer2 = getAddPlayer(3, "FWD", 2);
@@ -201,7 +201,7 @@ class DepthCardControllerTest
     @Order(5)
     void shouldFailWhenAddingPlayerToBBCardExceedingMaxDepth()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToChart";
+        final String baseUrl = getBaseUrl() + "/BB/player/addToChart";
         AddPlayer addPlayer = getAddPlayer(4, "CTR", 4);
         ResponseEntity<String> result = restTemplate.postForEntity(baseUrl, addPlayer, String.class);
         assertThat(400, is(result.getStatusCodeValue()));
@@ -211,7 +211,7 @@ class DepthCardControllerTest
     @Order(6)
     void shouldReturnBackupsForBBPositionCTRPlayer3()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/3/position/CTR/backups";
+        final String baseUrl = getBaseUrl() + "/BB/player/3/position/CTR/backups";
 
         ResponseEntity<Result> result = restTemplate.getForEntity(baseUrl, Result.class);
 
@@ -227,7 +227,7 @@ class DepthCardControllerTest
     @Order(7)
     void shouldReturnBlankWhenNoBackups()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/1/position/CTR/backups";
+        final String baseUrl = getBaseUrl() + "/BB/player/1/position/CTR/backups";
 
         ResponseEntity<Result> result = restTemplate.getForEntity(baseUrl, Result.class);
 
@@ -241,13 +241,13 @@ class DepthCardControllerTest
     @Order(8)
     void shouldDeletePlayer2AndReturnBBPlayer()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/removeFromChart";
+        final String baseUrl = getBaseUrl() + "/BB/player/removeFromChart";
 
-        RemovePlayer removePlayer = new RemovePlayer();
+        PlayerPosition removePlayer = new PlayerPosition();
         removePlayer.setPlayerId(2);
         removePlayer.setPosition("CTR");
 
-        HttpEntity<RemovePlayer> request = new HttpEntity(removePlayer, new HttpHeaders());
+        HttpEntity<PlayerPosition> request = new HttpEntity(removePlayer, new HttpHeaders());
 
         ResponseEntity<Result> result = restTemplate.exchange(baseUrl, HttpMethod.DELETE, request, Result.class);
 
@@ -261,7 +261,7 @@ class DepthCardControllerTest
     @Order(9)
     void shouldNotReturnPlayer2WhenBackupsForBBPositionCTRPlayer3()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/3/position/CTR/backups";
+        final String baseUrl = getBaseUrl() + "/BB/player/3/position/CTR/backups";
 
         ResponseEntity<Result> result = restTemplate.getForEntity(baseUrl, Result.class);
 
@@ -276,7 +276,7 @@ class DepthCardControllerTest
     @Order(10)
     void shouldShowFullDepthOfBB()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/fullDepth";
+        final String baseUrl = getBaseUrl() + "/BB/player/fullDepth";
         ResponseEntity<Result> result = restTemplate.getForEntity(baseUrl, Result.class);
         assertThat(200, is(result.getStatusCodeValue()));
 
@@ -312,5 +312,10 @@ class DepthCardControllerTest
             players.add(createPlayer);
         }
         return players;
+    }
+
+    private String getBaseUrl()
+    {
+        return "http://localhost:" + randomServerPort + "/depth-chart";
     }
 }

@@ -21,7 +21,7 @@ This is configured in the file located at: <i>resources/application.properties</
 The key <b>card.sports</b> is shown below: </br>
 
 <code>
-card.sports={NFL:5,BB:3}
+depth.chart.sports={NFL:5,BB:3}
 </code>
 
 <b>Note:</b> 
@@ -49,13 +49,13 @@ Defined below for NFL operations. This code needs to be consist with the configu
 
 <h4>Create Single Player</h4>
 <code>
-POST http://localhost:8080/depth-card/NFL/player </br>
+POST http://localhost:8080/depth-chart/NFL/player </br>
 &nbsp;&nbsp;{ "number": 4, name": "Scott Miller"}</br>
 </code>
 
 <h4>Create Multiple Players</h4>
 <code>
-POST http://localhost:8080/depth-card/NFL/players </br>
+POST http://localhost:8080/depth-chart/NFL/players </br>
 [</br>
 &nbsp;&nbsp;{ "number": 1, "name": "Jaelon Darden" }, </br>
 &nbsp;&nbsp;{ "number": 2, "name": "Kyle Trask" },</br>
@@ -65,13 +65,13 @@ POST http://localhost:8080/depth-card/NFL/players </br>
 
 <h4>Add Player To Chart</h4>
 <code>
-POST http://localhost:8080/depth-card/NFL/player/addToChart </br>
+POST http://localhost:8080/depth-chart/NFL/player/addToChart </br>
 &nbsp;&nbsp;{  "position": "QB", "playerId": 1,  "positionInDepth": 1}</br>
 </code>
 
 <h4>Add Multiple Players To The Chart</h4>
 <code>
-POST http://localhost:8080/depth-card/NFL/players/addToChart </br>
+POST http://localhost:8080/depth-chart/NFL/players/addToChart </br>
 [</br>
 &nbsp;&nbsp;{ "position": "LWR", "playerId": 2, "positionInDepth": 1 }, </br>
 &nbsp;&nbsp;{ "position": "LWR", "playerId": 3, "positionInDepth": 2 },</br>
@@ -81,18 +81,18 @@ POST http://localhost:8080/depth-card/NFL/players/addToChart </br>
 
 <h4>Remove Player From The Chart</h4>
 <code>
-DELETE http://localhost:8080/depth-card/NFL/player/removeFromChart </br>
+DELETE http://localhost:8080/depth-chart/NFL/player/removeFromChart </br>
 &nbsp;&nbsp;{ "position": "LWR", "playerId": 3 } </br>
 </code>
 
 <h4>Get Backups</h4>
 <code>
-GET http://localhost:8080/depth-card/NFL/player/2/position/LWR/backups </br>
+GET http://localhost:8080/depth-chart/NFL/player/2/position/LWR/backups </br>
 </code>
 
 <h4>Get Full Depth</h4>
 <code>
-GET http://localhost:8080/depth-card/NFL/player/fullDepth </br>
+GET http://localhost:8080/depth-chart/NFL/player/fullDepth </br>
 </code>
 
 <h3>Run Test</h3>

@@ -1,6 +1,6 @@
 package org.code.challange.model;
 
-public class Backups
+public class PlayerPosition
 {
     private String position;
     private int playerId;
@@ -10,14 +10,14 @@ public class Backups
         return position;
     }
 
-    public int getPlayerId()
-    {
-        return playerId;
-    }
-
     public void setPosition(String position)
     {
         this.position = position;
+    }
+
+    public int getPlayerId()
+    {
+        return playerId;
     }
 
     public void setPlayerId(int playerId)

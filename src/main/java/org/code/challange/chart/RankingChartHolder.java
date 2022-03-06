@@ -1,4 +1,4 @@
-package org.code.challange.card;
+package org.code.challange.chart;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,34 +8,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.code.challange.exception.IlligalCardOperationException;
+import org.code.challange.exception.IllegalChartOperationException;
 import org.code.challange.model.AddPlayer;
-import org.code.challange.model.Backups;
 import org.code.challange.model.CreatePlayer;
 import org.code.challange.model.Player;
-import org.code.challange.model.RemovePlayer;
+import org.code.challange.model.PlayerPosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.code.challange.exception.IlligalCardOperationException.MAXIMUM_CARD_DEPTH_INCREASED;
-import static org.code.challange.exception.IlligalCardOperationException.PLAYER_DOES_NOT_EXIST;
-import static org.code.challange.exception.IlligalCardOperationException.UNSUPPORTED_OPERATION;
-
-public class RankingChart
+public class RankingChartHolder implements RankingChart
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RankingChart.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RankingChartHolder.class);
 
     private final Map<Integer, Player> playerRegister = new LinkedHashMap();
 
-    private final Map<String, PlayersRank> sportPlayerRankRegister = new HashMap();
+    private final Map<String, PlayersRanks> playersRankRegister = new HashMap();
 
     private final String sport;
-    private final int maximumCardDepth;
 
-    public RankingChart(String sport, int maximumCardDepth)
+    private final int maximumChartDepth;
+
+    public RankingChartHolder(String sport, int maximumChartDepth)
     {
         this.sport = sport;
-        this.maximumCardDepth = maximumCardDepth;
+        this.maximumChartDepth = maximumChartDepth;
     }
 
     public void createPlayer(List<CreatePlayer> players)
@@ -58,26 +54,25 @@ public class RankingChart
     {
         for (AddPlayer addPlayer : addPlayers)
         {
-            if (addPlayer.getPositionInDepth() > maximumCardDepth)
+            if (addPlayer.getPositionInDepth() > maximumChartDepth)
             {
-                throw new IlligalCardOperationException(MAXIMUM_CARD_DEPTH_INCREASED,
-                    String.format("Maximum card depth supported is %d. Cannot add player to depth %d", maximumCardDepth,
-                        addPlayer.getPositionInDepth()));
+                throw new IllegalChartOperationException(String.format("Maximum card depth supported is %d. Cannot add player to depth %d",
+                    maximumChartDepth,
+                    addPlayer.getPositionInDepth()));
 
             }
             else if (!playerRegister.containsKey(addPlayer.getPlayerId()))
             {
-                throw new IlligalCardOperationException(PLAYER_DOES_NOT_EXIST,
-                    String.format("Unable to find a player by the id %d", addPlayer.getPlayerId()));
+                throw new IllegalChartOperationException(String.format("Unable to find a player by the id %d", addPlayer.getPlayerId()));
             }
 
             Player player = getPlayer(addPlayer.getPlayerId());
-            sportPlayerRankRegister.putIfAbsent(addPlayer.getPosition(), new PlayersRank());
-            PlayersRank ranks = sportPlayerRankRegister.get(addPlayer.getPosition());
+            playersRankRegister.putIfAbsent(addPlayer.getPosition(), new PlayersRankHolder());
+            PlayersRanks ranks = playersRankRegister.get(addPlayer.getPosition());
 
             if (ranks.getRanks().size() < addPlayer.getPositionInDepth() - 1)
             {
-                throw new IlligalCardOperationException(UNSUPPORTED_OPERATION,
+                throw new IllegalChartOperationException(
                     String.format("Unable to add player %s (%d), Position %s needs to be filled sequentially. Index %d not accepted",
                         player.getName(), player.getNumber(), addPlayer.getPosition(), addPlayer.getPositionInDepth()));
             }
@@ -88,27 +83,26 @@ public class RankingChart
         }
     }
 
-    private void addPlayerToCard(Player player, PlayersRank playersRank, int depth)
+    private void addPlayerToCard(Player player, PlayersRanks playersRank, int depth)
     {
         playersRank.removeFromRank(player);
-        playersRank.addToTanks(depth - 1, player);
-        if (playersRank.playersInRanks() > maximumCardDepth)
+        playersRank.addToRanks(depth - 1, player);
+        if (playersRank.countPlayersInRanks() > maximumChartDepth)
         {
             playersRank.removeLastPlayer();
         }
     }
 
-    public String removePlayerFromCard(RemovePlayer removePlayerCommand)
+    public String removePlayerFromCard(PlayerPosition playerPosition)
     {
-        PlayersRank playersRank = sportPlayerRankRegister.get(removePlayerCommand.getPosition());
+        PlayersRanks playersRank = playersRankRegister.get(playerPosition.getPosition());
 
         if (playersRank == null)
         {
-            throw new IlligalCardOperationException(PLAYER_DOES_NOT_EXIST,
-                String.format("No position configured by  %s", removePlayerCommand.getPosition()));
+            throw new IllegalChartOperationException(String.format("No position configured by  %s", playerPosition.getPosition()));
         }
 
-        Player player = getPlayer(removePlayerCommand.getPlayerId());
+        Player player = getPlayer(playerPosition.getPlayerId());
         if (playersRank.removeFromRank(player))
         {
             LOGGER.info("{} - Player #{} - {} removed from the card", sport, player.getNumber(), player.getName());
@@ -120,10 +114,10 @@ public class RankingChart
 
     public List<String> getFullDepth()
     {
-        List<String> path = new ArrayList(sportPlayerRankRegister.keySet().size());
+        List<String> path = new ArrayList(playersRankRegister.keySet().size());
         String depth;
 
-        for (Map.Entry<String, PlayersRank> entry : sportPlayerRankRegister.entrySet())
+        for (Map.Entry<String, PlayersRanks> entry : playersRankRegister.entrySet())
         {
             depth = getFormattedPayers(entry.getValue().getRanks());
             path.add(String.format("%s - %s", entry.getKey(), depth));
@@ -131,16 +125,16 @@ public class RankingChart
         return path;
     }
 
-    public List<String> getBackupPlayers(Backups backupsCommand)
+    public List<String> getBackupPlayers(PlayerPosition playerPosition)
     {
-        Player player = getPlayer(backupsCommand.getPlayerId());
+        Player player = getPlayer(playerPosition.getPlayerId());
 
         if (player == null)
         {
             return Collections.emptyList();
         }
 
-        PlayersRank playersRank = sportPlayerRankRegister.get(backupsCommand.getPosition());
+        PlayersRanks playersRank = playersRankRegister.get(playerPosition.getPosition());
         if (playersRank == null)
         {
             return Collections.emptyList();
