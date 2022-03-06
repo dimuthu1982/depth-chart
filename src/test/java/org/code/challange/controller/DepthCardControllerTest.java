@@ -90,7 +90,7 @@ class DepthCardControllerTest
     @Order(3)
     void shouldReturnCreatedStatusWhenPlayerAddedToNRLCard()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/NFL/players/addToCard";
+        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/NFL/players/addToChart";
         AddPlayer addPlayer1 = getAddPlayer(2, "QB", 1);
         AddPlayer addPlayer2 = getAddPlayer(1, "QB", 2);
 
@@ -143,7 +143,7 @@ class DepthCardControllerTest
     @Order(2)
     void shouldFailWhenAddingUndefinedPlayerToBBCard()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToCard";
+        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToChart";
 
         AddPlayer addPlayer = getAddPlayer(100, "CTR", 3);
 
@@ -158,7 +158,7 @@ class DepthCardControllerTest
     @Order(3)
     void shouldFailWhenAddingPlayerToBBCardOutOfOrder()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToCard";
+        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToChart";
 
         AddPlayer addPlayer = getAddPlayer(3, "CTR", 3);
 
@@ -173,7 +173,7 @@ class DepthCardControllerTest
     @Order(4)
     void shouldAddPlayersToCardWhenAddingPlayerToBBSequenceDepth()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/players/addToCard";
+        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/players/addToChart";
 
         AddPlayer addPlayer1 = getAddPlayer(1, "FWD", 1);
         AddPlayer addPlayer2 = getAddPlayer(3, "FWD", 2);
@@ -201,7 +201,7 @@ class DepthCardControllerTest
     @Order(5)
     void shouldFailWhenAddingPlayerToBBCardExceedingMaxDepth()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToCard";
+        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/addToChart";
         AddPlayer addPlayer = getAddPlayer(4, "CTR", 4);
         ResponseEntity<String> result = restTemplate.postForEntity(baseUrl, addPlayer, String.class);
         assertThat(400, is(result.getStatusCodeValue()));
@@ -241,7 +241,7 @@ class DepthCardControllerTest
     @Order(8)
     void shouldDeletePlayer2AndReturnBBPlayer()
     {
-        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/removeFromCard";
+        final String baseUrl = "http://localhost:" + randomServerPort + "/depth-card/BB/player/removeFromChart";
 
         RemovePlayer removePlayer = new RemovePlayer();
         removePlayer.setPlayerId(2);

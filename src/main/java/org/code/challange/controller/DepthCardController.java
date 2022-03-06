@@ -44,20 +44,20 @@ public class DepthCardController
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/depth-card/{sport}/player/removeFromCard")
+    @DeleteMapping("/depth-card/{sport}/player/removeFromChart")
     public Result removePlayer(@PathVariable("sport") String sport, @RequestBody RemovePlayer removePlayer)
     {
         return new Result(cardControllerService.removePlayerFromCard(sport, removePlayer));
     }
 
-    @PostMapping("/depth-card/{sport}/players/addToCard")
+    @PostMapping("/depth-card/{sport}/players/addToChart")
     public ResponseEntity addPlayerToChart(@PathVariable("sport") String sport, @RequestBody List<AddPlayer> addPlayer)
     {
         cardControllerService.addPlayerToCard(sport, addPlayer);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/depth-card/{sport}/player/addToCard")
+    @PostMapping("/depth-card/{sport}/player/addToChart")
     public ResponseEntity addPlayerToChart(@PathVariable("sport") String sport, @RequestBody AddPlayer addPlayer)
     {
         addPlayerToCard(sport, Collections.singletonList(addPlayer));
