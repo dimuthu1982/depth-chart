@@ -16,22 +16,22 @@ The application runs on the following configurations:
 * Maven
 
 <h3>Configurations</h3>
-The application needs to support sports to maintain a chart before its running. 
-This is configured in the file located at: <i>resources/application.properties</i>
-The key <b>card.sports</b> is shown below: </br>
-
+The application needs to support a sport before the application runs. 
+This is configured in the file located at: <i>resources/application.properties</i> by the 
+property key <b>depth.chart.sports</b>.
+</br>
+e.g. 
+</br>
 <code>
 depth.chart.sports={NFL:5,BB:3}
 </code>
 
 <b>Note:</b> 
-    NFL is the sport it supports to and maximum depth of a chart is set to 5. 
-    BB is the sport it supports to and maximum depth of a chart is set to 3. 
+    NFL is a sport it supports to and maximum depth of a chart is set to 5. 
+    BB is a sport it supports to and maximum depth of a chart is set to 3. 
 
-Which means this application supports NFL and BB and holds respective figure as a maximum depth for the chart. 
+This application supports NFL and BB and holds respective figure as a maximum depth for the chart. 
 Any player added beyond the maximum depth is rejected/removed from the chart.
-
-
 
 <h3>Build Application</h3>
 <code>
