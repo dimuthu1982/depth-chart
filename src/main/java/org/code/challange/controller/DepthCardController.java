@@ -16,9 +16,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/depth-chart/{sport}")
 public class DepthCardController
 {
     private CardOperationHandler cardOperationHandler;
@@ -29,41 +32,41 @@ public class DepthCardController
         this.cardOperationHandler = cardOperationHandler;
     }
 
-    @PostMapping("/depth-chart/{sport}/player")
-    public ResponseEntity createPlayer(@PathVariable("sport") String sport, @RequestBody CreatePlayer createPlayer)
+    @PostMapping("/player")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createPlayer(@PathVariable("sport") String sport, @RequestBody CreatePlayer createPlayer)
     {
         createPlayer(sport, Collections.singletonList(createPlayer));
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/depth-chart/{sport}/players")
-    public ResponseEntity createPlayers(@PathVariable("sport") String sport, @RequestBody List<CreatePlayer> createPlayer)
+    @PostMapping("/players")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createPlayers(@PathVariable("sport") String sport, @RequestBody List<CreatePlayer> createPlayer)
     {
         createPlayer(sport, createPlayer);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/depth-chart/{sport}/player/removeFromChart")
+    @DeleteMapping("/player/removeFromChart")
     public Result removePlayer(@PathVariable("sport") String sport, @RequestBody PlayerPosition removePlayer)
     {
         return new Result(cardOperationHandler.removePlayerFromChart(sport, removePlayer));
     }
 
-    @PostMapping("/depth-chart/{sport}/players/addToChart")
-    public ResponseEntity addPlayerToChart(@PathVariable("sport") String sport, @RequestBody List<AddPlayer> addPlayer)
+    @PostMapping("/players/addToChart")
+    @ResponseStatus(HttpStatus.OK)
+    public void addPlayerToChart(@PathVariable("sport") String sport, @RequestBody List<AddPlayer> addPlayer)
     {
         cardOperationHandler.addPlayerToChart(sport, addPlayer);
-        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/depth-chart/{sport}/player/addToChart")
-    public ResponseEntity addPlayerToChart(@PathVariable("sport") String sport, @RequestBody AddPlayer addPlayer)
+    @PostMapping("/player/addToChart")
+    @ResponseStatus(HttpStatus.OK)
+    public void addPlayerToChart(@PathVariable("sport") String sport, @RequestBody AddPlayer addPlayer)
     {
         addPlayerToCard(sport, Collections.singletonList(addPlayer));
-        return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/depth-chart/{sport}/player/{payerId}/position/{position}/backups", produces = "application/json")
+    @GetMapping(value = "/player/{payerId}/position/{position}/backups", produces = "application/json")
     public Result getBackups(@PathVariable("sport") String sport, @PathVariable("payerId") int payerId, @PathVariable("position") String position)
     {
         PlayerPosition playerPosition = new PlayerPosition();
@@ -72,7 +75,7 @@ public class DepthCardController
         return new Result(cardOperationHandler.getBackupPlayers(sport, playerPosition));
     }
 
-    @GetMapping("/depth-chart/{sport}/player/fullDepth")
+    @GetMapping("/player/fullDepth")
     public Result getFullDepthChart(@PathVariable("sport") String sport)
     {
         return new Result(cardOperationHandler.getFullDepth(sport));
